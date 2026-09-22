@@ -44,7 +44,7 @@ class ServiceProviderResource extends JsonResource
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
             'profile_complete_percentage' => $this->profileCompletionPercentage(),
             'remaining_profile_fields' => $this->getRemainingFields(),
-            'is_premium' => $this->user->activeSubscription ? true : false,
+            'is_premium' => $this->user?->activeSubscription ? true : false,
             'distance_km' => (isset($this->distance) && $this->distance !== PHP_FLOAT_MAX) ? round($this->distance, 2) : null,
             'cancellation_enabled' => $this->cancellation_enabled ?? false,
             'cancellation_hours_before' => $this->cancellation_hours_before,
