@@ -29,10 +29,19 @@ class AuthService extends Service
         $data = $this->findOrCreateUser($phone_number, $access_type);  
         $account = $data['account'];
         $create_flag = $data['create_flag'];       
-        if($access_type == 'provider' && $account->is_active == 0 && $create_flag == true) {     //SP register         
-             $admin_email = config('admin.mail');        
-            Mail::to($admin_email)->send(New RegisterServiceProviderMail($account)); 
-        }   
+        if($access_type == 'provider' && $account->is_active == 0 && $create_flag == true) {     //SP register
+            try {
+                $admin_email = config('admin.mail');
+                Mail::to($admin_email)->send(new RegisterServiceProviderMail($account));
+            } catch (\Throwable $e) {
+                // Admin notification must never block OTP delivery
+                \Log::error('Failed to send provider registration mail to admin', [
+                    'provider_id' => $account->id,
+                    'phone_number' => $phone_number,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        }
         $this->SendOTP($account);
         return 'OTP sent';           
     }
