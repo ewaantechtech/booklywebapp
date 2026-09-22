@@ -25,7 +25,8 @@ class SendSmsService
                 // $fullPhone = $countryCode . $phone;
 
                 //new edits
-                $phone = preg_replace('/[^0-9]/', '', $number); 
+                $phone = preg_replace('/[^0-9]/', '', $number);
+                $phone = ltrim($phone, '0');
                 if (!str_starts_with($phone, '966')) {
                     $phone = '966' . $phone;
                 }
@@ -50,11 +51,15 @@ class SendSmsService
                 ));
                 $response = curl_exec($ch);
                 if (curl_errno($ch)) {
-                    return response()->json(['status' => FALSE, 'message' => $ch]);
+                    $curlError = curl_error($ch);
+                    curl_close($ch);
+                    \Log::error('toSms curl error', ['phone' => $phone, 'error' => $curlError]);
+                    return response()->json(['status' => FALSE, 'message' => $curlError]);
                 }
                 $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 curl_close($ch);
                 if (intval($httpcode) != 200) {
+                    \Log::error('toSms non-200 response from Msegat', ['phone' => $phone, 'http_code' => $httpcode, 'response' => $response]);
                     return response()->json(['status' => FALSE, 'message' => $httpcode]);
                 }
                 $text = '';
@@ -67,9 +72,11 @@ class SendSmsService
                 }
                 $text = "{" . $text . "}";
                 $response_array = json_decode($text);
-                if (intval($response_array->code) != 1) {
-                    return response()->json(['status' => FALSE, 'message' => $response_array->message]);
+                if (intval($response_array->code ?? 0) != 1) {
+                    \Log::error('toSms Msegat rejected message', ['phone' => $phone, 'code' => $response_array->code ?? null, 'message' => $response_array->message ?? null, 'response' => $response]);
+                    return response()->json(['status' => FALSE, 'message' => $response_array->message ?? 'SMS gateway error']);
                 }
+                \Log::info('toSms sent', ['phone' => $phone, 'code' => $response_array->code]);
             }
             return response()->json(['status' => TRUE]);
         } catch (\Throwable $th) {
