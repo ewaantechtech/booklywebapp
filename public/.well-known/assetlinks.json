@@ -1,0 +1,23 @@
+[
+
+  {
+
+    "relation": ["delegate_permission/common.handle_all_urls"],
+
+    "target": {
+
+      "namespace": "android_app",
+
+      "package_name": "com.bookly.user.app",
+
+      "sha256_cert_fingerprints": [
+
+     "73:21:7B:FB:63:E8:5D:1F:90:42:F5:7C:94:ED:76:C3:1D:96:80:6E:9F:CF:FB:D0:0E:01:CD:80:99:4C:B6:7A"
+
+      ]
+
+    }
+
+  }
+
+]
