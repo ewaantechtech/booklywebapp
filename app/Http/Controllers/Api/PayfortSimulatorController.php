@@ -196,7 +196,7 @@ class PayfortSimulatorController extends Controller
         }
 
         // Check success response_code
-        if (substr($response_code, 2) !== '000') {
+        if (substr($response_code, -3) !== '000') {
             return response()->json(['message' => 'Payment failed', 'payment_status' => 'failed'], 200);
         }
 
