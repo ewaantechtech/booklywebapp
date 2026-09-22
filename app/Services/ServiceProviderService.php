@@ -93,7 +93,9 @@ class ServiceProviderService
      */
     public function getProviderById($id)
     {
-        $provider = ServiceProvider::find($id);
+        $provider = ServiceProvider::where('is_active', 1)
+            ->where('published', 1)
+            ->find($id);
 
         if (!$provider) {
             throw new \Exception('Provider not found', 404);
@@ -108,7 +110,9 @@ class ServiceProviderService
 
     public function getCancellationPolicy($id)
     {
-        $provider = ServiceProvider::find($id);
+        $provider = ServiceProvider::where('is_active', 1)
+            ->where('published', 1)
+            ->find($id);
 
         if (!$provider) {
             throw new \Exception('Provider not found', 404);

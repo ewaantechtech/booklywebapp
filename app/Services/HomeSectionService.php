@@ -25,7 +25,8 @@ class HomeSectionService
 
         $sections = HomeSection::with([
             'providers' => function ($q) {
-                $q->where('is_active', 1)->where('published', 1);
+                $q->where('service_providers.is_active', 1)
+                    ->where('service_providers.published', 1);
             },
             'providers.reviews',
         ])->get();
