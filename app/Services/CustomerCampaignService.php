@@ -10,22 +10,26 @@ class CustomerCampaignService
     public function getCampaign()
     {
         $campaign = CustomerCampaign::with(
-            [   'services',    
+            [
+                'services',
                 'services.attachedServices',
                 'services.categories',
-                'providers',    
+                'providers' => function ($q) {
+                    $q->where('service_providers.is_active', 1)
+                        ->where('service_providers.published', 1);
+                },
                 'providers.addresses',
                 'providers.reviews',
                 'providers.attachedServices',
                 'providers.providerType',
                 'providers.user.activeSubscription',
-            ])
+            ]
+        )
             ->where('is_active', true)->first();
         if (! $campaign) {
             return response()->json(['message' => 'no active campaign'], 404);
         }
 
         return new CustomerCampaignResource($campaign);
-
     }
 }

@@ -15,38 +15,38 @@ class ServiceProviderService
         // $longitude = $request->longitude;
 
         $query = ServiceProvider::query()
-            ->with('addresses')  
-            ->where('is_active', true)
-            ->where('published', true)           
-        
+            ->with('addresses')
+            ->where('is_active', 1)
+            ->where('published', 1)
+
             ->when($request->filled('rating'), function ($query) use ($request) {
                 $query->whereHas('reviews', function ($q) {
                     $q->select('service_provider_id')
-                    ->selectRaw('AVG(rate) as avg_rating')
-                    ->groupBy('service_provider_id');
+                        ->selectRaw('AVG(rate) as avg_rating')
+                        ->groupBy('service_provider_id');
                 })
-                ->whereRaw('(SELECT AVG(rate) FROM reviews WHERE reviews.service_provider_id = service_providers.id) >= ?', [
-                    (int) $request->rating
-                ]);
+                    ->whereRaw('(SELECT AVG(rate) FROM reviews WHERE reviews.service_provider_id = service_providers.id) >= ?', [
+                        (int) $request->rating
+                    ]);
             })
-        /*         if ($request->filled('rating')) {
+            /*         if ($request->filled('rating')) {
             $query->withAvg('reviews', 'rate')
               ->having('reviews_avg_rate', '>=', (int)$request->rating);
 
          }*/
-        /* if ($request->filled('keyword')) {
+            /* if ($request->filled('keyword')) {
               $query->where('name', 'like', "%{$request->keyword}%");
                }  */
             ->when($request->has('keyword'), function ($query) use ($request) {
-                $keyword = '%'.$request->keyword.'%';
+                $keyword = '%' . $request->keyword . '%';
                 $query->where('name', 'LIKE', $keyword);
             });
-        
-      
-   // If latitude and longitude are provided, sort by distance
-      //  if ($latitude && $longitude) {
-          if ($request->latitude && $request->longitude) {
-             $latitude = $request->latitude;
+
+
+        // If latitude and longitude are provided, sort by distance
+        //  if ($latitude && $longitude) {
+        if ($request->latitude && $request->longitude) {
+            $latitude = $request->latitude;
             $longitude = $request->longitude;
             $providers = $query->get()->map(function ($provider) use ($latitude, $longitude) {
                 // Get the provider's default address or first address
@@ -143,8 +143,8 @@ class ServiceProviderService
         $lonDiff = deg2rad($lon2 - $lon1);
 
         $a = sin($latDiff / 2) * sin($latDiff / 2) +
-             cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
-             sin($lonDiff / 2) * sin($lonDiff / 2);
+            cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+            sin($lonDiff / 2) * sin($lonDiff / 2);
 
         $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
@@ -233,7 +233,7 @@ class ServiceProviderService
             ->count();
     }
 
-   /* public function countOfBookingsPerDay(ServiceProvider $serviceProvider, ?string $date_from, ?string $date_to)
+    /* public function countOfBookingsPerDay(ServiceProvider $serviceProvider, ?string $date_from, ?string $date_to)
     {
         $date_from = $date_from ? Carbon::parse($date_from)->format('Y-m-d') : Carbon::now()->format('Y-m-d');
         $date_to = $date_to ? Carbon::parse($date_to)->format('Y-m-d') : Carbon::parse($date_from)->addWeek()->format('Y-m-d');
@@ -288,8 +288,8 @@ class ServiceProviderService
 
     public function countOfBookingsPerDay(ServiceProvider $serviceProvider, ?string $date_from, ?string $date_to,  ?string $timeframe = null, ?int $year = null,  ?int $month = null,  ?int $week = null)
     {
-        [$date_from, $date_to] = $this->resolveDateRange($date_from, $date_to, $timeframe, $year, $month, $week);        
-        
+        [$date_from, $date_to] = $this->resolveDateRange($date_from, $date_to, $timeframe, $year, $month, $week);
+
         // $date_today = Carbon::now()->format('Y-m-d');
         // $date_from = $date_from ? Carbon::parse($date_from)->format('Y-m-d') : Carbon::parse($date_today)->subWeek()->format('Y-m-d');
         // $date_to = $date_to ? Carbon::parse($date_to)->format('Y-m-d') : Carbon::parse($date_from)->addWeek()->format('Y-m-d');       
@@ -297,10 +297,10 @@ class ServiceProviderService
         // if ($date_from > $date_to) {
         //     throw new \Exception('date_from must be less than date_to');
         // }
-   
+
         $query = $serviceProvider->appointments()
             ->with('appointmentServices')
-           // ->where('status_id', AppointmentStatus::Confirmed->value)
+            // ->where('status_id', AppointmentStatus::Confirmed->value)
             ->whereHas('appointmentServices', function ($query) use ($date_from, $date_to) {
                 return $query->whereBetween('date', [$date_from, $date_to]);
             })
@@ -340,7 +340,7 @@ class ServiceProviderService
                     ];
                 }
             }
-        }  
+        }
 
         return $response;
     }
@@ -372,7 +372,6 @@ class ServiceProviderService
                 return $serviceProvider->attachedServices->where('service_id', $service->id)->first()->price;
             })
             ->sum();
-
     }
 
     public function getTheMostBookedService(ServiceProvider $serviceProvider)
@@ -416,10 +415,10 @@ class ServiceProviderService
             ->sortByDesc('service_type_count')
             ->take(2)
             ->values();
-
     }
 
-    private function resolveDateRange(?string $date_from, ?string $date_to,  ?string $timeframe,  ?int $year, ?int $month, ?int $week): array {
+    private function resolveDateRange(?string $date_from, ?string $date_to,  ?string $timeframe,  ?int $year, ?int $month, ?int $week): array
+    {
         $today = Carbon::today();
 
         if ($timeframe) {
@@ -434,7 +433,7 @@ class ServiceProviderService
                     $arr = [
                         $today->copy()->subDay()->startOfDay(),
                         $today->copy()->subDay()->endOfDay()
-                    ];                
+                    ];
                     return [
                         $today->copy()->subDay()->startOfDay(),
                         $today->copy()->subDay()->endOfDay()

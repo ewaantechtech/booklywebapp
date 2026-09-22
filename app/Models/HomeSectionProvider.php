@@ -14,6 +14,7 @@ class HomeSectionProvider extends Model
     ];
 
     public function providers() : BelongsToMany {
-        return $this->belongsToMany(ServiceProvider::class, 'home_section_providers');
+        return $this->belongsToMany(ServiceProvider::class, 'home_section_providers')->where('service_providers.is_active', 1)
+        ->where('service_providers.published', 1);
     }
 }
