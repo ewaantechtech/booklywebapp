@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\ServiceProviderResource\Pages;
 use App\Filament\Resources\ServiceProviderResource\RelationManagers\BankDetailsRelationManager;
 use App\Filament\Resources\ServiceProviderResource\RelationManagers\EmployeesRelationManager;
@@ -339,5 +340,11 @@ class ServiceProviderResource extends Resource
             BankDetailsRelationManager::class,
             //AppointmentsRelationManager::class,
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->whereHas('user', fn ($q) => $q->whereNotNull('otp_verified_at'));
     }
 }
