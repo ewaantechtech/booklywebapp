@@ -72,7 +72,7 @@
             <!-- Download Buttons -->
             <div class="space-y-4">
                 <!-- App Store Button -->
-                <a href="#" class="download-btn block w-full bg-black text-white rounded-xl py-4 px-6 flex items-center justify-center space-x-reverse space-x-3 hover:bg-gray-800">
+                <a href="https://apps.apple.com/us/app/bookly-provider/id6757137339" class="download-btn block w-full bg-black text-white rounded-xl py-4 px-6 flex items-center justify-center space-x-reverse space-x-3 hover:bg-gray-800">
                     <div class="text-right">
                         <div class="text-xs">حمّل على</div>
                         <div class="text-xl font-semibold">App Store</div>
@@ -83,7 +83,7 @@
                 </a>
 
                 <!-- Google Play Button -->
-                <a href="#" class="download-btn block w-full bg-black text-white rounded-xl py-4 px-6 flex items-center justify-center space-x-reverse space-x-3 hover:bg-gray-800">
+                <a href="https://play.google.com/store/apps/details?id=com.bookly.partner" class="download-btn block w-full bg-black text-white rounded-xl py-4 px-6 flex items-center justify-center space-x-reverse space-x-3 hover:bg-gray-800">
                     <div class="text-right">
                         <div class="text-xs">حمّل على</div>
                         <div class="text-xl font-semibold">Google Play</div>
