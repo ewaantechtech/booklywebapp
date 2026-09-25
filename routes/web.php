@@ -24,6 +24,16 @@ Route::get('terms-conditions', [\App\Http\Controllers\SettingController::class, 
 Route::get('/contact', [\App\Http\Controllers\SettingController::class, 'contact'])->name('contactus');
 Route::get('/share/provider/{id}', [\App\Http\Controllers\AppDownloadController::class, 'showProvider'])->name('app.download.provider');
 
+// iOS Universal Links: Apple checks /.well-known/ first and falls back to the site root.
+// Serve the same file at the root, as JSON, with no redirect.
+Route::get('/apple-app-site-association', function () {
+    return response(
+        file_get_contents(public_path('.well-known/apple-app-site-association')),
+        200,
+        ['Content-Type' => 'application/json']
+    );
+});
+
 
 // use Illuminate\Support\Facades\Mail;
 
